@@ -1,0 +1,20 @@
+name: comment-command
+on: [issue_comment]
+
+jobs:
+  push-go-mod-tidy:
+    name: "go mod tidy update"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+        with:
+          persist-credentials: true
+      - name: Checkout
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_URL="${{ github.event.issue.pull_request.url }}"
+          PR_NUM=${PR_URL##*/}
+          echo "Checking out from PR #$PR_NUM based on URL: $PR_URL"
+          hub pr checkout $PR_NUM
